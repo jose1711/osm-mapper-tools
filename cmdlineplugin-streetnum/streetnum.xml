@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<command version="1" name="streetnum" icon="regexp.png" run='bash streetnum.sh {select}'>
+	<parameter required="true" type="any" maxinstances="0">
+		<name>Housenumber2conscr/streetnumber</name>
+		<description>Any objects to processing</description>
+	</parameter>
+      <parameter required="true" type="natural" maxvalue="1">
+                <name>select</name>
+                <description>Housenumber is streetnumber (1) or conscriptionnumber (0)</description>
+                <value>1</value>
+        </parameter>
+</command>
