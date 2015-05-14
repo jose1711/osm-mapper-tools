@@ -1,0 +1,4 @@
++ t r & f \.gpx
+g       Upload gpx file to OpenStreetMap
+        DESC=%{Enter description}
+        /home/jose/bin/osmtrackupload.sh "${DESC}" %f

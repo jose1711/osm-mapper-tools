@@ -1,0 +1,97 @@
+#!/bin/bash
+#set -x
+# blueosm.sh - downloads most recent gpx/wpts from gpsmid
+# via bluetooth, converts amr files to wav (requires amr2wav.sh) 
+# and opens everything up in josm
+
+# requirements:
+# - obextool + paired mobile phone (set your pc to authenticated to allow automated
+#   transfers)
+# - amr2wav.sh
+# - (optional) josm
+
+# successfully tested on arch linux with nokia e51
+#              jose 1711 gmail com, may 2011
+
+# bluetooth address of your device
+btaddress=00:22:FD:0A:57:24
+# directory in your phone where
+# exported tracks/waypts go to
+trackslocation=E:/gpsmid-tracks
+# directory in your phone where
+# media (amr) files go to
+medialocation=${trackslocation}/media
+# where to save tracks/wpt locally
+localdir=~/osm
+# full path to amr2wav.sh script
+amr2wav=~/bin/amr2wav.sh
+
+if [ ! -d "${localdir}" ]; then
+	echo "directory ${localdir} does not exist, creating it.."
+	mkdir -p ${localdir} || echo "can't create, exiting.." && exit 1
+	fi
+
+if [ ! -w "${localdir}" ]; then
+	echo "directory ${localdir} does not have writeable permissions, exiting.."
+	exit 1
+	fi
+
+if [ ! -x ${amr2wav} ]; then
+	echo "file ${amr2wav} does not exist and/or is not executable, exiting.."
+	exit 1
+	fi
+
+cd ${localdir}
+export DISPLAY=:0
+
+hciconfig | grep -q UP
+if [ $? -ne 0 ]; then
+	echo "bluetooth stack is DOWN. exiting.."
+	exit 1
+fi
+
+obexftp -b ${btaddress} -l C: &>/dev/null
+if [ $? -eq 1 ]; then
+	echo "mobile too far or bluetooth off?"
+	exit 1
+fi
+
+free=$(obexftp -b ${btaddress} -X 2>&1 | sed -n '/Free/s/<Free>\([^<]*\)<\/Free>/\1/p' | tail -1 | tr -d '\r')
+
+if [ ${free} -lt 30000000 ]; then
+	echo "only $((free/1024/1024)) MB of free space on data card, this may be really bad"
+	#exit 1
+fi
+
+latest_date=$(obexftp -b ${btaddress} -l ${trackslocation}/  2>&1 | sed 's/ *<file name="\([^"]*\)" size="\([^"]*\)" modified="\([^"]*\)".*/\1;\2;\3/'|sort -t';' -k3|tail -1|sed 's/\([0-9]*-[0-9]*-[0-9]*\).*/\1/')
+mkdir ${latest_date}
+cd ${latest_date}
+
+obexftp -b ${btaddress} -l ${trackslocation}/ 2>&1 | sed 's/ *<file name="\([^"]*\)".*/\1/' | grep ^${latest_date} | while read -r file
+	do
+	echo "getting $file..."
+	obexftp -b ${btaddress} -g "${trackslocation}/${file}"
+	until [ $? -eq 0 ]; do
+		obexftp -b ${btaddress} -g "${trackslocation}/${file}"
+		sleep 1
+		done
+	sleep 1
+	done
+
+obexftp -b ${btaddress} -c ${medialocation} -l 2>&1 | grep amr | grep ${latest_date} | sed 's/ *<file name="\([^"]*\)".*/\1/' | while read -r amr
+	do
+	echo "getting sound file ${amr}..."
+	obexftp -b ${btaddress} -g "${medialocation}/${amr}"
+	until [ $? -eq 0 ]; do
+		obexftp -b ${btaddress} -g "${medialocation}/${amr}"
+		sleep 1
+		done
+	sleep 1
+	done
+
+ls | grep -- -waypoints.gpx$ | while read -r wpt
+	do
+	${amr2wav} ${wpt}
+	done
+
+josm *gpx
