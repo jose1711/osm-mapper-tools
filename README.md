@@ -23,6 +23,10 @@ A generator of mapcss color addresses - helps to spot incosistencies between str
 
 Set of scripts that make import of address-data to OSM easier.
 
+* postgis/
+
+Some postgis-related scripts.
+
 * tmj2wav/
 
 Converts audionotes created by TrackMyJourney (http://www.trackmyjourney.co.uk/).
