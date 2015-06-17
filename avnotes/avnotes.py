@@ -32,7 +32,15 @@ for string in map(lambda x:re.sub("(.*)\.3gp",r"\1",x),audiofiles):
   basename=string
   string=re.sub("-","",string)
   for i in range(len(string)):
-    digit = ARRAY.index(string[i])
+    try:
+      digit = ARRAY.index(string[i])
+    except:
+# not sure where the ~ vs @ came from but this is to accept both
+      if string[i] == "~":
+        digit = 63
+      else:
+        raise ValueError
+      
     code = ( code << 6 ) | digit
  
   # align to 64bit integer
