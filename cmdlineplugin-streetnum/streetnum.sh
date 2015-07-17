@@ -18,6 +18,8 @@ TMPIN=$(mktemp)
 TMPPROC=$(mktemp)
 TMPOUT=$(mktemp)
 
+putstreetnumber=0
+
 if [ $1 -eq 1 ]
 	then
 	putstreetnumber=1

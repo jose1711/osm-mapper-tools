@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<command version="1" name="streetnum" icon="regexp.png" run='bash streetnum.sh {select}'>
+<command version="3" name="streetnum" icon="regexp.png" run='bash streetnum.sh {select}'>
 	<parameter required="true" type="any" maxinstances="0">
 		<name>Housenumber2conscr/streetnumber</name>
 		<description>Any objects to processing</description>
