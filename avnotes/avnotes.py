@@ -30,7 +30,8 @@ audiofiles=filter(lambda x:re.search(r'\.3gp$',x),files)
 for string in map(lambda x:re.sub("(.*)\.3gp",r"\1",x),audiofiles):
   code=0
   basename=string
-  string=re.sub("-","",string)
+  #string=re.sub("-","",string)
+  string=re.sub("-.*","",string)
   for i in range(len(string)):
     try:
       digit = ARRAY.index(string[i])
