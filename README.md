@@ -23,6 +23,10 @@ A generator of mapcss color addresses - helps to spot incosistencies between str
 
 Set of scripts that make import of address-data to OSM easier.
 
+* osc_checker/
+
+Shell script which runs various checks on osm change file - a tool that helps to detect and fight bad edits. 
+
 * postgis/
 
 Some postgis-related scripts.
