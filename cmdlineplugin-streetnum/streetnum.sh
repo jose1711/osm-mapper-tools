@@ -1,18 +1,27 @@
 #!/bin/bash
 #set -x
-# bash script for josm's commandline plugin that takes value of addr:housenumber
+# bash script for JOSM's commandline plugin that takes value of addr:housenumber
 # and puts it into either addr:streetnumber or addr:conscriptionnumber
 #
 # probably only useful for czech/slovak users
 #
+# how to install:
+#  - enable CommandLine plugin in JOSM
+#  - copy this script and related xml file to %appdata%/JOSM/plugins/CommandLine (Windows)
+#    or ~/.josm.plugins/CommandLine (Linux)
+#  - on Windows: install Cygwin or try win-bash (beware, the script has only been tested on Linux) 
+#
 # example use:
-# 1. in josm: select nodes with addr:housenumber and w/o addr:streetnumber/addr:conscriptionnumber:
+# 1. in JOSM: select nodes with addr:housenumber and w/o addr:streetnumber/addr:conscriptionnumber:
 #    ctrl-f "addr:housenumber" AND "addr:streetnumber"=""
 #         OR
 #    ctrl-f "addr:housenumber" AND "addr:conscriptionnumber"=""
 # 2. in JOSM's CommandLine plugin: type streetnum
 # 3. type 0 for housenumber --> conscriptionnumber or type 1 (default) for housenumber --> streetnumber
 # 4. check output before upload
+#
+# known issues:
+#  - it's slow. if you want speed, rewrite this in perl or use tagcalc (bundled with CommandLine plugin)
 
 TMPIN=$(mktemp)
 TMPPROC=$(mktemp)
