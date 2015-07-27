@@ -95,6 +95,9 @@ xmllint --xpath  '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*/
 	xmllint --xpath '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*[./tag[@k="addr:conscriptionnumber"][@v="'${value}'"]]' "${input}" 2>/dev/null | grep -v '<nd ref'
 	done
 
+label "street name should not contain a dot"
+xmllint --xpath  '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*[./tag[@k="name"][contains(@v,".")] and ./tag[@k="highway"]]' "${input}" 2>/dev/null |grep -v '<nd ref'
+
 label "addr:streetnumber may only contain number and an optional single uppercase letter"
 xmllint --xpath  '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*/tag[@k="addr:streetnumber"]/@v' "${input}" 2>/dev/null | sed 's/v="/\n/g' | tr -d '"' | sed -e 's/^ *//' -e 's/ $//' | grep -Ev '^[1-9][0-9]*[[:upper:]]?$' | while read -r value
 	do
