@@ -22,8 +22,11 @@
 # is downloaded from geofabrik
 #
 # known problems:
-# geofabrik's osm change files are not precisely cut on
-# borders so you may encounter some false positives. 
+# - geofabrik's osm change files are not precisely cut on
+#   borders so you may encounter some false positives. 
+# - simplicity comes at a price: some problems will not get
+#   detected
+# 
 
 
 geofabrik_url=http://download.geofabrik.de/europe/slovakia-updates/000/000/
@@ -98,6 +101,9 @@ xmllint --xpath  '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*/
 label "street name should not contain a dot"
 xmllint --xpath  '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*[./tag[@k="name"][contains(@v,".")] and ./tag[@k="highway"]]' "${input}" 2>/dev/null |grep -v '<nd ref'
 
+label "opening hours may not contain Po, Ut, St..."
+xmllint --xpath  '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*[./tag[@k="opening_hours"][contains(@v,"Po")] or ./tag[@k="opening_hours"][contains(@v,"Ut")] or ./tag[@k="opening_hours"][contains(@v,"St")] or ./tag[@k="opening_hours"][contains(@v,"PO")]]' "${input}" 2>/dev/null |grep -v '<nd ref'
+
 label "addr:streetnumber may only contain number and an optional single uppercase letter"
 xmllint --xpath  '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*/tag[@k="addr:streetnumber"]/@v' "${input}" 2>/dev/null | sed 's/v="/\n/g' | tr -d '"' | sed -e 's/^ *//' -e 's/ $//' | grep -Ev '^[1-9][0-9]*[[:upper:]]?$' | while read -r value
 	do
@@ -117,6 +123,6 @@ xmllint --xpath  '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*/
 	done
 
 label "buzzwords (ad) detected?"
-xmllint --xpath  '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*' "${input}" 2>/dev/null | grep -iE 'prekrásn|malebn|ceny|lacn'
+xmllint --xpath  '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*' "${input}" 2>/dev/null | grep -iE 'prekrásn|malebn|ceny|lacn|predaj'
 
 echo
