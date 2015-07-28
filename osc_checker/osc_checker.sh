@@ -54,13 +54,26 @@ if [ $? -ne 0 ]
 if [ -z "${input}" ]
 	then
 	echo "you need to specify argument: filename.osc or sequence number"
+	echo "e. g. $0 888 or $0 latest"
 	exit 1
 	fi
 
 if [ ! -f "${input}" -a "${input}" = "latest" ]
 	then
     input=$(wget -qO- "${geofabrik_state}" | awk -F= '/sequenceNumber/ {print $2}')
+	if [ -z "${input}" ]
+		then
+		echo "could not determine last sequence from web, quitting"
+		exit 1
+		fi
 	fi
+
+( [ ! -f "${input}" ] && echo "${input}" | grep -vq '^[0-9]*$' ) &&
+	{
+	echo "Such file does not exist and $1 is not an integer"
+	exit 1
+}
+	
 
 if [ ! -f "${input}" -a "${input}" -gt 1 ]
 	then
