@@ -31,6 +31,10 @@ Shell script which runs various checks on osm change file - a tool that helps to
 
 Some postgis-related scripts.
 
+* reverse_gpx/
+
+Simple script to reverse direction of gpx file while keeping original timestamps.
+
 * tmj2wav/
 
 Converts audionotes created by TrackMyJourney (http://www.trackmyjourney.co.uk/).
