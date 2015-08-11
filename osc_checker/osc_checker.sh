@@ -135,6 +135,12 @@ xmllint --xpath  '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*/
 	xmllint --xpath '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*[./tag[@k="addr:postcode"][@v="'${value}'"]]' "${input}" 2>/dev/null | grep -v '<nd ref'
 	done
 
+label "building:levels may only contain number"
+xmllint --xpath  '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*/tag[@k="building:levels"]/@v' "${input}" 2>/dev/null | sed 's/v="/\n/g' | tr -d '"' | sed -e 's/^ *//' -e 's/ $//' | grep -Ev '^[1-9][0-9]*$' | while read -r value
+	do
+	xmllint --xpath '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*[./tag[@k="building:levels"][@v="'${value}'"]]' "${input}" 2>/dev/null | grep -v '<nd ref'
+	done
+
 label "buzzwords (ad) detected?"
 xmllint --xpath  '/osmChange/*[not(contains(string(local-name(.)),"delete"))]/*' "${input}" 2>/dev/null | grep -iE 'prekrásn|malebn|ceny|lacn|predaj'
 
