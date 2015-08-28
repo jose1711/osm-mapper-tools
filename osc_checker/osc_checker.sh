@@ -21,6 +21,9 @@
 # if sequence number is specified, the osm changefile
 # is downloaded from geofabrik
 #
+# number with preceding colon (:) character means going back
+# specified number of days, so :1 = yesterday's file
+#
 # known problems:
 # - geofabrik's osm change files are not precisely cut on
 #   borders so you may encounter some false positives. 
@@ -66,6 +69,10 @@ if [ ! -f "${input}" -a "${input}" = "latest" ]
 		echo "could not determine last sequence from web, quitting"
 		exit 1
 		fi
+	elif [[ ! -f "${input}" && "${input}" =~ ^: ]]
+		then
+		moveback=$(echo $1 | tr -d :)
+    	input=$((`wget -qO- "${geofabrik_state}" | awk -F= '/sequenceNumber/ {print $2}'`-moveback))
 	fi
 
 ( [ ! -f "${input}" ] && echo "${input}" | grep -vq '^[0-9]*$' ) &&
