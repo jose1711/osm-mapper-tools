@@ -1,0 +1,133 @@
+(a[^ ]*)?gwerkovej
+ambroseho
+andrusovova
+antolska
+belinskeho
+benadicka
+betliarska
+blagoevova
+bohrova
+bosakova
+bradacova
+brancska
+bratska
+budatinska
+bulikova
+bzovicka
+capajevova
+cernysevskeho
+daliborovo namestie
+dargovska
+dolnozemska cesta
+dubnicka
+dudova
+einsteinova
+farskeho
+fedinova
+furdekova
+gercenova
+gessayova
+gettingova
+gogolova
+goralska
+haanova
+halova
+handlovska
+harmanecka
+holicska
+hrobakova
+hrobarska
+humenske namestie
+iljusinova
+janikovske role
+jankolova
+jantarova cesta
+jaroslavova
+jasovska
+jiraskova
+jungman+ova
+kapicova
+kapitulske polia
+kaukazs?ka
+kezmarske namestie
+klokocova
+kocankova
+kolma
+kopcianska
+krasnohorska
+krasovskeho
+kremnicka
+krupinska
+kubinska
+kutlikova
+lachova
+lenardova
+levocska
+lietavska
+\(lokalita\)
+lubietovska
+lubovnianska
+luzna
+macharova
+majova
+maly drazdiak
+mamateyova
+manesovo namestie
+markova
+(m[^ ]+c[^ ]+ +)?sklodowskej
+medvedovej
+mlynarovicova
+muchovo namestie
+nabrezna
+namestie hraniciarov
+namestie j([^ ]+) pavla ii.
+nobelovo namestie
+novobanska
+ocovska
+osuskeho
+ovsistske namestie
+pajstunska
+pankuchova
+panonska cesta
+pecnianska
+pecniansky les
+pifflova
+planckova
+pobrezna
+polereckeho
+(pri )?seci
+prokofievova
+prokopova
+romanova
+rontgenova
+rovniankova
+rusovska cesta
+sad janka krala
+sasovska
+sevcenkova
+sintavska
+smolenicka
+sosnova
+starhradska
+starohajska
+strecnianska
+sustekova
+svabinskeho
+tematinska
+topolcianska
+tupolevova
+turnianska
+udernicka
+vavilovova
+viedenska cesta
+viglasska
+vilova
+vlastenecke name.?stie
+vranovska
+vysehradska
+wolkrova
+zadunajska cesta
+zaporozska
+zehrianska
+zlta
+znievska
