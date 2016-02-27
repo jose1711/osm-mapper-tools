@@ -5,7 +5,7 @@ syncs address data between osm and municipality
 most likely only usable for slovak openstreetmap community
 
 usage:
- usage: syncer.py [-h] (-f OSM_DUMP | -i RELATION_ID) [-r] [-u] [-d] municipality_data.csv
+ usage: syncer.py [-h] (-f OSM_DUMP | -i RELATION_ID) [-p] [-r] [-u] [-d] municipality_data.csv
 
 local csv files need to be formatted as follows:
  cadastral_area_code<tab>streetname<tab>conscriptionnumber<tab>streetnumber<tab>description (optional)
@@ -99,13 +99,34 @@ class AddressData:
 			req = requests.get('http://polygons.openstreetmap.fr/get_poly.py?id='+str(self._srcFile)+'&params=0')
 			poly = [x.replace('\t',' ') for x in req.text.split('\n') if x not in '["polygon","END"]' and x != "1" ]
 			poly = ' '.join([' '.join([x.split(' ')[2],x.split(' ')[1]]) for x in poly])
-			postdata='[out:csv("addr:street","addr:conscriptionnumber","addr:streetnumber")];'
+			postdata='[out:csv("addr:street",'
+			if args.addrplace:
+				postdata+='"addr:place",'
+			postdata+='"addr:conscriptionnumber","addr:streetnumber")];'
 			postdata+='(node["addr:streetnumber"](poly:"'+poly+' ");'
 			postdata+='way["addr:streetnumber"](poly:"'+poly+' ");'
-			postdata+='relation["addr:streetnumber"](poly:"'+poly+' ");<;);out;'
+			postdata+='relation["addr:streetnumber"](poly:"'+poly+' ");'
+			if args.addrplace:
+				postdata+='node["addr:place"](poly:"'+poly+' ");'
+				postdata+='way["addr:place"](poly:"'+poly+' ");'
+				postdata+='relation["addr:place"](poly:"'+poly+' ");'
+			postdata+='<;);out;'
+			if args.debug_mode:
+				print ("overpass query: {}".format(postdata))
 			x = requests.post('http://overpass-api.de/api/interpreter', postdata)
 			x.encoding = 'UTF-8'
 			content = ["ignore\t"+x+"\tignore" for x in x.text.split("\n") if x != ""][1:]
+			if args.addrplace:
+				templist = []
+				for x in content:
+					entry = x.split('\t')
+					# if addr:street is empty but addr:place exists then use addr:place instead
+					if not entry[1] and entry[2]:
+						templist.append([entry[0]]+[entry[2]]+entry[3:])
+					else:
+						templist.append(entry[0:2]+entry[3:])
+				
+				content = ['\t'.join(x) for x in templist]
 			content='\n'.join(content)
 			if args.debug_mode:
 				print (content)
@@ -186,6 +207,7 @@ if __name__ == "__main__":
 	parser.add_argument('munilist', metavar='muni', type=str, nargs=1, help='csv file containing data from municipality')
 	parser.add_argument('-r', dest='reversed', action='store_true', help='reverse query: which data are in OSM but are missing in list from municipality')
 	parser.add_argument('-u', dest='unmatched_only', action='store_true', help='only show unmatched street names')
+	parser.add_argument('-p', dest='addrplace', action='store_true', help='use value of addr:place if addr:street is empty')
 	parser.add_argument('-d', dest='debug_mode', action='store_true', help='show some debug info')
 	args = parser.parse_args()
 
